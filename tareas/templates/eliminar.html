@@ -1,10 +1,230 @@
-<h1>Eliminar tarea</h1>
+{% extends 'base.html' %}
 
-<p>¿Seguro que quieres eliminar "{{ tarea.titulo }}"?</p>
+{% block title %}Eliminar tarea · Taskly{% endblock %}
 
-<form method="POST">
-  {% csrf_token %}
-  <button type="submit">Sí, eliminar</button>
-</form>
+{% block extra_css %}
+<style>
+  .delete-container {
+    max-width: 500px;
+    margin: 2rem auto;
+  }
 
-<a href="{% url 'lista' %}">Cancelar</a>
+  .breadcrumb-custom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--texto-medio);
+    margin-bottom: 1.4rem;
+  }
+
+  .breadcrumb-custom a {
+    color: var(--morado-400);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .breadcrumb-custom a:hover {
+    text-decoration: underline;
+  }
+
+  .delete-card {
+    background: white;
+    border: 1px solid #fecdd3;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(244, 63, 94, 0.08);
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .delete-card-header {
+    background: linear-gradient(135deg, #fff1f2, #fce7f3);
+    border-bottom: 1px solid #fecdd3;
+    padding: 2rem 2rem 1.5rem;
+  }
+
+  .delete-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #f43f5e, #e11d48);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    margin: 0 auto 1.1rem;
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3);
+  }
+
+  .delete-card-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: #991b1b;
+    margin: 0 0 0.3rem;
+  }
+
+  .delete-card-header p {
+    color: #9f1239;
+    font-size: 0.85rem;
+    margin: 0;
+    opacity: 0.8;
+  }
+
+  .delete-card-body {
+    padding: 1.8rem 2rem;
+  }
+
+  .tarea-preview {
+    background: var(--rosa-100);
+    border: 1.5px solid #f9d6ec;
+    border-radius: 11px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.3rem;
+    text-align: left;
+  }
+
+  .tarea-preview-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--rosa-500);
+    margin-bottom: 5px;
+  }
+
+  .tarea-preview-titulo {
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--texto-oscuro);
+    margin-bottom: 3px;
+  }
+
+  .tarea-preview-estado {
+    font-size: 0.8rem;
+    color: var(--texto-medio);
+  }
+
+  .aviso {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .delete-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .btn-cancelar {
+    background: white;
+    border: 1.5px solid var(--borde);
+    color: var(--texto-medio);
+    font-weight: 500;
+    font-size: 0.88rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+  }
+
+  .btn-cancelar:hover {
+    border-color: var(--morado-300);
+    color: var(--morado-500);
+    background: var(--morado-100);
+    text-decoration: none;
+  }
+
+  .btn-eliminar {
+    background: linear-gradient(135deg, #f43f5e, #e11d48);
+    border: none;
+    color: white;
+    font-weight: 500;
+    font-size: 0.88rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 3px 10px rgba(244, 63, 94, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .btn-eliminar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(244, 63, 94, 0.35);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="delete-container">
+
+  <div class="breadcrumb-custom">
+    <a href="{% url 'lista' %}"><i class="bi bi-house me-1"></i>Mis tareas</a>
+    <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
+    <span>Eliminar tarea</span>
+  </div>
+
+  <div class="delete-card">
+
+    <div class="delete-card-header">
+      <div class="delete-icon">
+        <i class="bi bi-trash3-fill"></i>
+      </div>
+      <h2>¿Eliminar tarea?</h2>
+      <p>Esta acción no se puede deshacer</p>
+    </div>
+
+    <div class="delete-card-body">
+
+      <div class="tarea-preview">
+        <div class="tarea-preview-label">
+          <i class="bi bi-clipboard-x me-1"></i>Tarea a eliminar
+        </div>
+        <div class="tarea-preview-titulo">{{ tarea.titulo }}</div>
+        <div class="tarea-preview-estado">
+          {% if tarea.completado %}
+          <i class="bi bi-check-circle-fill" style="color:#059669;"></i> Completada
+          {% else %}
+          <i class="bi bi-clock" style="color:var(--rosa-500);"></i> Pendiente
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="aviso">
+        <i class="bi bi-exclamation-triangle-fill" style="flex-shrink:0;"></i>
+        Una vez eliminada, no podrás recuperar esta tarea ni su información.
+      </div>
+
+      <div class="delete-footer">
+        <a href="{% url 'lista' %}" class="btn-cancelar">
+          <i class="bi bi-arrow-left"></i> Cancelar
+        </a>
+        <form method="POST" style="margin: 0;">
+          {% csrf_token %}
+          <button type="submit" class="btn-eliminar">
+            <i class="bi bi-trash3-fill"></i> Sí, eliminar
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -6,4 +6,6 @@ urlpatterns = [
     path('crear/', views.crear_tarea, name='crear'),
     path('editar/<int:id>/', views.editar_tarea, name='editar'),
     path('eliminar/<int:id>/', views.eliminar_tarea, name='eliminar'),
+    path('completar/<int:id>/', views.completar_tarea, name='completar'),
+    path('completadas/', views.tareas_completadas, name='completadas'),
 ]

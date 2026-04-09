@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mis Tareas{% endblock %}</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --rosa-100: #fdf0f7;
+            --rosa-300: #f3adda;
+            --rosa-400: #e879c0;
+            --rosa-500: #d946a8;
+            --morado-100: #f3effe;
+            --morado-200: #e2d5fb;
+            --morado-300: #c4a8f5;
+            --morado-400: #9b72ef;
+            --morado-500: #7c3aed;
+            --texto-oscuro: #2d1b4e;
+            --texto-medio: #6b4f8a;
+            --borde: #e8d5f5;
+            --sombra: 0 4px 24px rgba(124, 58, 237, 0.08);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #faf9fc;
+            color: var(--texto-oscuro);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ── 1. Manchas decorativas de fondo ── */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -120px;
+            left: -120px;
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(227, 160, 243, 0.22) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -120px;
+            right: -120px;
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(155, 114, 239, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            /* 2. Borde inferior degradado rosa → morado */
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(90deg, var(--rosa-400), var(--morado-400)) 1;
+            box-shadow: 0 2px 12px rgba(124, 58, 237, 0.06);
+            padding: 0.8rem 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--morado-500) !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 3. Punto de acento en el nombre */
+        .brand-punto {
+            color: var(--rosa-400);
+        }
+
+        .brand-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--rosa-400), var(--morado-400));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 15px;
+        }
+
+        .nav-link {
+            color: var(--texto-medio) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            padding: 0.4rem 0.9rem !important;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--morado-500) !important;
+            background: var(--morado-100);
+        }
+
+        /* ── Botón principal ── */
+        .btn-morado {
+            background: linear-gradient(135deg, var(--rosa-500), var(--morado-400));
+            border: none;
+            color: white;
+            font-weight: 500;
+            font-size: 0.88rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 10px;
+            transition: all 0.25s;
+            box-shadow: 0 3px 10px rgba(155, 114, 239, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+        }
+
+        .btn-morado:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(155, 114, 239, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* ── Mensajes flash ── */
+        .mensaje-exito {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border-radius: 10px;
+            padding: 0.8rem 1.1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        /* ── Contenido sobre el fondo ── */
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            color: var(--texto-medio);
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'lista' %}">
+                <div class="brand-icon"><i class="bi bi-check2-square"></i></div>
+                Taskly<span class="brand-punto">.</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                style="border-color: var(--borde);">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'completadas' %}">
+                            <i class="bi bi-check2-all me-1"></i>Completadas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn-morado" href="{% url 'crear' %}">
+                            <i class="bi bi-plus-lg"></i> Nueva tarea
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO -->
+    <div class="container mt-4">
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="mensaje-exito">
+            <i class="bi bi-check-circle-fill"></i> {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
+    </div>
+
+    <footer>Taller 2 Django · Arquitectura MVT</footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

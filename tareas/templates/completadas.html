@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}Completadas · Taskly{% endblock %}
+
+{% block extra_css %}
+<style>
+    .seccion-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.9rem;
+        color: var(--texto-oscuro);
+        margin: 0;
+    }
+
+    .page-subtitle {
+        color: var(--texto-medio);
+        font-size: 0.88rem;
+        margin: 3px 0 0;
+    }
+
+    .tabla-wrap {
+        background: white;
+        border: 1px solid var(--borde);
+        border-radius: 16px;
+        box-shadow: var(--sombra);
+        overflow: hidden;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    }
+
+    thead th {
+        padding: 0.9rem 1.4rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #065f46;
+        border-bottom: 1px solid #a7f3d0;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid #f0fdf4;
+        transition: background 0.15s;
+    }
+
+    tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    tbody tr:hover {
+        background: #f0fdf4;
+    }
+
+    tbody td {
+        padding: 1rem 1.4rem;
+        vertical-align: middle;
+        font-size: 0.92rem;
+    }
+
+    .tarea-titulo {
+        font-weight: 500;
+        color: var(--texto-oscuro);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    .tarea-descripcion {
+        font-size: 0.81rem;
+        color: var(--texto-medio);
+        margin-top: 3px;
+        max-width: 380px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .badge-completada {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 99px;
+        white-space: nowrap;
+    }
+
+    .acciones {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .btn-accion {
+        width: 33px;
+        height: 33px;
+        border-radius: 9px;
+        border: 1.5px solid var(--borde);
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .btn-editar {
+        color: var(--morado-400);
+    }
+
+    .btn-editar:hover {
+        background: var(--morado-100);
+        border-color: var(--morado-300);
+        color: var(--morado-500);
+        transform: scale(1.08);
+    }
+
+    .btn-eliminar {
+        color: #f43f5e;
+    }
+
+    .btn-eliminar:hover {
+        background: #fff1f2;
+        border-color: #fda4af;
+        color: #e11d48;
+        transform: scale(1.08);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3.5rem 2rem;
+    }
+
+    .empty-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #059669;
+        margin: 0 auto 1.1rem;
+    }
+
+    .empty-state h3 {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.3rem;
+        color: var(--texto-oscuro);
+        margin-bottom: 0.3rem;
+    }
+
+    .empty-state p {
+        color: var(--texto-medio);
+        font-size: 0.88rem;
+        margin-bottom: 1.4rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="seccion-header">
+    <div>
+        <h1 class="page-title">Completadas</h1>
+        <p class="page-subtitle">Tareas que ya has finalizado</p>
+    </div>
+</div>
+
+<div class="tabla-wrap">
+    {% if tareas %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%">Tarea</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th style="text-align: right">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tarea in tareas %}
+            <tr>
+                <td>
+                    <div class="tarea-titulo">
+                        <form method="POST" action="{% url 'completar' tarea.id %}" style="margin:0;">
+                            {% csrf_token %}
+                            <button type="submit"
+                                style="background:none; border:none; padding:0; cursor:pointer; display:flex;">
+                                <i class="bi bi-check-circle-fill" style="color:#059669; font-size:15px;"></i>
+                            </button>
+                        </form>
+                        {{ tarea.titulo }}
+                    </div>
+                    <div class="tarea-descripcion">{{ tarea.descripcion }}</div>
+                </td>
+                <td>
+                    {% if tarea.fecha %}
+                    <span style="font-size: 0.82rem; color: var(--texto-medio);">
+                        <i class="bi bi-calendar3 me-1"></i>{{ tarea.fecha }}
+                    </span>
+                    {% else %}
+                    <span style="font-size: 0.82rem; color: var(--borde);">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge-completada"><i class="bi bi-check2 me-1"></i>Completada</span>
+                </td>
+                <td>
+                    <div class="acciones">
+                        <a href="{% url 'editar' tarea.id %}" class="btn-accion btn-editar" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'eliminar' tarea.id %}" class="btn-accion btn-eliminar" title="Eliminar">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon"><i class="bi bi-check2-all"></i></div>
+        <h3>Sin tareas completadas</h3>
+        <p>Cuando termines una tarea aparecerá aquí.</p>
+        <a href="{% url 'lista' %}" class="btn-morado">
+            <i class="bi bi-list-task"></i> Ver pendientes
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
